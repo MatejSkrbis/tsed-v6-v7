@@ -1,6 +1,6 @@
 import {join} from "path";
 import {Configuration, Inject} from "@tsed/di";
-import {PlatformApplication, PlatformRouter} from "@tsed/common";
+import {PlatformApplication} from "@tsed/common";
 import "@tsed/platform-express"; // /!\ keep this import
 import "@tsed/ajv";
 import {config} from "./config/index";
@@ -13,12 +13,11 @@ import * as rest from "./controllers/rest/index";
   httpsPort: false, // CHANGE
   disableComponentsScan: true,
   mount: {
-    "/rest": [
+    "/": [
       ...Object.values(rest)
     ]
   },
   middlewares: [
-    "cors",
     "cookie-parser",
     "compression",
     "method-override",
@@ -39,16 +38,11 @@ export class Server {
   @Inject()
   protected app: PlatformApplication;
 
-  @Inject()
-  protected router: PlatformRouter;
-
   @Configuration()
   protected settings: Configuration;
 
   public $beforeRoutesInit(): void {
-    console.log('Before routes init');
-
-    this.router.get('/schemas', async(req: any, res: any) => {
+    this.app.get('/schemas', async(req: any, res: any) => {
       return 'This is my schema';
     });
   }

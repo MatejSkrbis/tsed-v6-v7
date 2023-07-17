@@ -2,9 +2,16 @@ import {$log} from "@tsed/common";
 import { PlatformExpress } from "@tsed/platform-express";
 import {Server} from "./Server";
 
+const conf = {
+  // As long as middlewares are added here there is a problem with posting formdata
+  middlewares: [
+    "cors"
+  ],
+};
+
 async function bootstrap() {
   try {
-    const platform = await PlatformExpress.bootstrap(Server);
+    const platform = await PlatformExpress.bootstrap(Server, conf);
     await platform.listen();
 
     process.on("SIGINT", () => {
